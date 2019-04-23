@@ -1,0 +1,183 @@
+<html>
+	<head>
+		<title>росия священная наша держава</title>
+		
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+		<style>
+			body {
+				margin: 0;
+				background-color: #222;
+				
+				font-family: 'Open Sans', sans-serif;
+				color: #efefef
+			}
+			
+			.centered {
+				margin: 0;
+			    position: absolute;
+			    top: 50%;
+			    left: 50%;
+			    transform: translate(-50%, -50%);
+			}
+			
+			.container {
+				height: 300px;
+			}
+			
+			.padded {
+				margin-right: 0.5em;
+				margin-left: 0.2em;
+			}
+			
+			.digit, .separator {
+				font-size: 5em;
+				text-shadow: 0 3px 10px #111;
+			}
+			
+			.digit.small, .separator.small {
+				font-size: 4.5em;
+			}
+			
+			.digit.tiny, .separator.tiny {
+				font-size: 1.75em;
+			}
+			
+			.hidden {
+				display: none;
+			}
+			
+			.text {
+				font-size: 3em;
+			}
+			
+			.beer {
+				font-size: 3em;
+				display: block-inline;
+			}
+			
+			#s-separator {
+				width: 4em;
+				display: inline-block;
+			}
+		</style>
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", () => {
+				const rip = new Date(2019, 10, 1, 0, 0, 0, 0);
+		
+				const daysWords = {
+					1: "день",
+					2: "дня",
+					3: "дней"
+				};
+				
+				const hoursWords = {
+					1: "час",
+					2: "часа",
+					3: "часов"
+				};
+				
+				const minutesWords = {
+					1: "минуту",
+					2: "минуты",
+					3: "минут"
+				};
+				
+				const secondsWords = {
+					1: "секунду",
+					2: "секунды",
+					3: "секунд"
+				};
+				
+				const pad = (n, width, z) => {
+					z = z || "0";
+					n = n + "";
+					return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+				};
+				
+				const fetchForm = (val) => {
+					let u = val % 10;
+					let d = Math.floor(val / 10);
+					if(u >= 2 && u <= 4 && d !== 1) return 2;
+					if(u === 1 && d !== 1) return 1;
+					return 3;
+				};
+				
+				const elemAliveBlock = document.getElementById("alive");
+				const elemDeadBlock = document.getElementById("dead");
+				
+				const elemDaysNumber = document.getElementById("d");
+				const elemHoursNumber = document.getElementById("h");
+				const elemMinutesNumber = document.getElementById("m");
+				const elemSecondsNumber = document.getElementById("s");
+				const elemMillisecondsNumber = document.getElementById("ms");
+				
+				const elemDays = document.getElementById("d-separator");
+				const elemHours = document.getElementById("h-separator");
+				const elemMinutes = document.getElementById("m-separator");
+				const elemSeconds = document.getElementById("s-separator");
+				
+				const render = (ms) => {
+					if(ms > 0) {
+						elemAliveBlock.className = "";
+						elemDeadBlock.className = "hidden";
+					
+						let numMilliseconds = Math.floor(ms % 1000);
+						let numSeconds = Math.floor((ms / 1000) % 60);
+						let numMinutes = Math.floor((ms / 1000 / 60) % 60);
+						let numHours = Math.floor((ms / 1000 / 60 / 60) % 24);
+						let numDays = Math.floor((ms / 1000 / 60 / 60 / 24));
+					
+						let days = pad(numDays, 3);
+						let hours = pad(numHours, 2);
+						let minutes = pad(numMinutes, 2);
+						let seconds = pad(numSeconds, 2);
+						let milliseconds = pad(Math.floor(numMilliseconds / 10), 2);
+
+						let daysWord = daysWords[fetchForm(numDays)];
+						let hoursWord = hoursWords[fetchForm(numHours)];
+						let minutesWord = minutesWords[fetchForm(numMinutes)];
+						let secondsWord = secondsWords[fetchForm(numSeconds)];
+						
+						elemDaysNumber.innerText = days;
+						elemHoursNumber.innerText = hours;
+						elemMinutesNumber.innerText = minutes;
+						elemSecondsNumber.innerText = seconds;
+						elemMillisecondsNumber.innerText = milliseconds;
+						
+						elemDays.innerText = daysWord;
+						elemHours.innerText = hoursWord;
+						elemMinutes.innerText = minutesWord;
+						elemSeconds.innerText = secondsWord;
+					} else {
+						elemAliveBlock.className = "hidden";
+						elemDeadBlock.className = "";
+					}
+				};
+				
+				const update = () => {
+					render(rip - Date.now());
+				};
+				
+				setInterval(update, 10)
+			});
+		</script>
+	</head>
+	
+	<body>
+		<div class="centered container">
+			<div id="alive" class="hidden">
+				<div class="text">
+					<div class="beer">🍺</div> закончится через
+				</div>
+				<div class="countdown"><span class="digit" id="d">000</span><span class="tiny padded separator" id="d-separator">дней</span><span class="digit" id="h">00</span><span class="tiny padded separator" id="h-separator">часов</span><span class="digit" id="m">00</span><span class="tiny padded separator" id="m-separator">минут</span><span class="digit" id="s">00</span><span class="small separator">.</span><span class="small digit" id="ms">00</span><span class="tiny padded separator" id="s-separator">секунд</span>
+				</div>
+			</div>
+			<div id="dead" class="hidden">
+				<div class="text">
+					<div class="beer">🍺</div> закончилось ^^
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
